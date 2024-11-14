@@ -1,51 +1,47 @@
-/* static/css/style.css */
-body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background: #f4f4f4;
+/* Estilos para el formulario */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-    padding: 20px;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.header {
-    background: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem;
+.form-group label {
+    font-weight: bold;
 }
 
-.message-box {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.form-group input,
+.form-group textarea {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
-.api-data {
-    margin-top: 20px;
-    padding: 20px;
-    background: #e9ecef;
-    border-radius: 8px;
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
-.button {
-    background: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+.form-status {
+    margin-top: 15px;
 }
 
-.button:hover {
-    background: #0056b3;
+.success {
+    color: #28a745;
+    padding: 10px;
+    background: #d4edda;
+    border-radius: 4px;
+}
+
+.error {
+    color: #dc3545;
+    padding: 10px;
+    background: #f8d7da;
+    border-radius: 4px;
 }
