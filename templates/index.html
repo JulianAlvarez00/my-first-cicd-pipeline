@@ -1,77 +1,209 @@
-<!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Primera Pipeline</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="header">
-        <h1>Mi Primera Pipeline DevOps</h1>
-    </div>
+{% extends "base.html" %}
 
-    <div class="container">
-        <!-- Contenido anterior -->
-        
-        <div class="message-box">
-            <h2>Contáctanos</h2>
-            <form id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label for="name">Nombre:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="message">Mensaje:</label>
-                    <textarea id="message" name="message" required></textarea>
-                </div>
-                
-                <button type="submit" class="button">Enviar Mensaje</button>
-            </form>
-            <div id="formStatus" class="form-status"></div>
+{% block title %}DevOps Pipeline - Home{% endblock %}
+
+{% block content %}
+<div id="app">
+    <!-- Hero Section -->
+    <section class="text-center py-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Pipeline DevOps Demo</h1>
+        <p class="text-xl text-gray-600 mb-8">Una demostración de integración continua y despliegue continuo</p>
+        <div class="animate-bounce">
+            <i class="fas fa-arrow-down text-blue-600 text-2xl"></i>
         </div>
-    </div>
+    </section>
 
-    <script>
-        // Código JavaScript anterior
+    <!-- Status Section -->
+    <section class="mb-12">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Estado del Sistema</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-green-100 p-4 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 text-2xl mr-2"></i>
+                        <span class="text-green-700">Sistema Activo</span>
+                    </div>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-code-branch text-blue-500 text-2xl mr-2"></i>
+                        <span class="text-blue-700">Versión 1.0.0</span>
+                    </div>
+                </div>
+                <div class="bg-purple-100 p-4 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-clock text-purple-500 text-2xl mr-2"></i>
+                        <span class="text-purple-700" v-text="updateTime"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+    <!-- Contact Form Section -->
+    <section id="contact" class="mb-12">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Contáctanos</h2>
             
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value
-            };
+            <!-- Form Success Message -->
+            <div v-if="formSuccess" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <strong class="font-bold">¡Éxito!</strong>
+                <span class="block sm:inline">Tu mensaje ha sido enviado correctamente.</span>
+            </div>
 
+            <!-- Form Error Message -->
+            <div v-if="formError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                <strong class="font-bold">Error:</strong>
+                <span class="block sm:inline">[[formError]]</span>
+            </div>
+
+            <form @submit.prevent="submitForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                        Nombre
+                    </label>
+                    <input 
+                        v-model="form.name"
+                        :class="{'border-red-500': errors.name}"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="name"
+                        type="text"
+                        required
+                    >
+                    <p v-if="errors.name" class="text-red-500 text-xs italic">[[errors.name]]</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input 
+                        v-model="form.email"
+                        :class="{'border-red-500': errors.email}"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email"
+                        type="email"
+                        required
+                    >
+                    <p v-if="errors.email" class="text-red-500 text-xs italic">[[errors.email]]</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="message">
+                        Mensaje
+                    </label>
+                    <textarea 
+                        v-model="form.message"
+                        :class="{'border-red-500': errors.message}"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="message"
+                        rows="4"
+                        required
+                    ></textarea>
+                    <p v-if="errors.message" class="text-red-500 text-xs italic">[[errors.message]]</p>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button 
+                        :disabled="isLoading"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
+                        type="submit"
+                    >
+                        <i v-if="isLoading" class="fas fa-spinner fa-spin mr-2"></i>
+                        [[ isLoading ? 'Enviando...' : 'Enviar Mensaje' ]]
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const { createApp } = Vue
+
+createApp({
+    delimiters: ['[[', ']]'],
+    data() {
+        return {
+            updateTime: new Date().toLocaleString(),
+            form: {
+                name: '',
+                email: '',
+                message: ''
+            },
+            errors: {},
+            isLoading: false,
+            formSuccess: false,
+            formError: ''
+        }
+    },
+    methods: {
+        updateDateTime() {
+            this.updateTime = new Date().toLocaleString()
+        },
+        validateForm() {
+            this.errors = {}
+            
+            if (!this.form.name.trim()) {
+                this.errors.name = 'El nombre es requerido'
+            }
+            
+            if (!this.form.email.trim()) {
+                this.errors.email = 'El email es requerido'
+            } else if (!this.validateEmail(this.form.email)) {
+                this.errors.email = 'Email inválido'
+            }
+            
+            if (!this.form.message.trim()) {
+                this.errors.message = 'El mensaje es requerido'
+            }
+            
+            return Object.keys(this.errors).length === 0
+        },
+        validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        },
+        async submitForm() {
+            if (!this.validateForm()) return
+            
+            this.isLoading = true
+            this.formSuccess = false
+            this.formError = ''
+            
             try {
                 const response = await fetch('/api/contact', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData)
-                });
-
-                if (response.ok) {
-                    document.getElementById('formStatus').innerHTML = 
-                        '<div class="success">¡Mensaje enviado con éxito!</div>';
-                    document.getElementById('contactForm').reset();
-                } else {
-                    throw new Error('Error al enviar el mensaje');
+                    body: JSON.stringify(this.form)
+                })
+                
+                if (!response.ok) {
+                    throw new Error('Error al enviar el mensaje')
                 }
+                
+                this.formSuccess = true
+                this.form.name = ''
+                this.form.email = ''
+                this.form.message = ''
+                
+                // Auto-hide success message after 5 seconds
+                setTimeout(() => {
+                    this.formSuccess = false
+                }, 5000)
             } catch (error) {
-                document.getElementById('formStatus').innerHTML = 
-                    '<div class="error">Error al enviar el mensaje. Por favor, intenta nuevamente.</div>';
+                this.formError = error.message
+            } finally {
+                this.isLoading = false
             }
-        });
-    </script>
-</body>
-</html>
+        }
+    },
+    mounted() {
+        setInterval(this.updateDateTime, 1000)
+    }
+}).mount('#app')
+</script>
+{% endblock %}
