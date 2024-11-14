@@ -1,0 +1,41 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Primera Pipeline</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>Mi Primera Pipeline DevOps</h1>
+    </div>
+
+    <div class="container">
+        <div class="message-box">
+            <h2>Mensaje del Servidor:</h2>
+            <div class="api-data" id="messageContent">
+                {{ message }}
+            </div>
+        </div>
+
+        <div class="message-box">
+            <h2>Datos de la Aplicación:</h2>
+            <div class="api-data">
+                <p><strong>Estado:</strong> Activo</p>
+                <p><strong>Versión:</strong> 1.0.0</p>
+                <p><strong>Última actualización:</strong> <span id="updateTime"></span></p>
+            </div>
+            <button class="button" onclick="refreshTime()">Actualizar Hora</button>
+        </div>
+    </div>
+
+    <script>
+        function refreshTime() {
+            document.getElementById('updateTime').textContent = new Date().toLocaleString();
+        }
+        refreshTime();
+    </script>
+</body>
+</html>
